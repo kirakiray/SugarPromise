@@ -1,1 +1,3 @@
-# SugarPromise
+#SugarPromise
+
+ES6的Promise设计不合理，太难用了，于是按照SugarRequire的加载方式重新设计一个更好用的Promise模块。

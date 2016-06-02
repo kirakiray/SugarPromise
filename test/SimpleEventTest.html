@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>PrimiseBaseTest</title>
+    <script src="../src/SugarPromise.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+var e1 = new SimpleEvent();
+
+e1.one('haha', function(e) {
+    console.log('haha1', e);
+});
+
+e1.last('haha', function(e) {
+    console.log('haha last', e);
+    console.groupEnd();
+});
+
+e1.one('haha', function(e) {
+    console.log('haha2', e);
+});
+
+
+e1.on('haha', function(e) {
+    console.log('haha on', e);
+});
+
+e1.first('haha', function(e) {
+    console.group('haha one');
+    console.log('haha first', e);
+});
+
+console.log(e1);
+
+e1.emit('haha', 'wadaxiwa');
+
+setTimeout(function() {
+    e1.emit('haha', 'wadaxiwa');
+}, 500);
+
+e1.one('pigu', function(e) {
+    console.log('pigu', e);
+});
+</script>
+
+</html>

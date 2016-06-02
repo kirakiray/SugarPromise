@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>SugarPromise Test</title>
+    <script src="../src/SugarPromise.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+var fun1 = function(resolve, reject) {
+    setTimeout(function() {
+        resolve('hahaha1');
+    }, 500);
+};
+var fun2 = function(resolve, reject) {
+    setTimeout(function() {
+        resolve('hahaha222222');
+    }, 1000);
+};
+
+prom(fun1, fun2)
+    .then(function(data1, data2) {
+        console.log(data1);
+        console.log(data2);
+    })
+    .prom(fun1, fun2)
+    .then(function(data1, data2) {
+        console.log(data1);
+        console.log(data2);
+    });
+</script>
+
+</html>
