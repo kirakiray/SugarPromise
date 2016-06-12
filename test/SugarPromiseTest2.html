@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,user-scalable=no">
-    <title>SugarPromise Test</title>
+    <title>SugarPromise Test 2</title>
     <script src="../src/SugarPromise.js"></script>
 </head>
 
@@ -28,29 +28,35 @@ var fun3 = function(resolve, reject) {
     }, 1500);
 };
 
-prom(fun1, fun2)
+var a = prom(fun1, fun3)
     .then(function(data1, data2) {
+        console.group('g1');
         console.log(data1);
         console.log(data2);
+        console.groupEnd();
     })
     .fire(function() {
         console.log('fire01');
-    })
-    .prom(fun1, fun3)
-    .then(function(data1, data3) {
+    });
+a.prom(fun1, fun2)
+    .then(function(data1, data2) {
+        console.group('g2');
         console.log(data1);
-        console.log(data3);
+        console.log(data2);
+        console.groupEnd();
     })
     .fire(function() {
-        console.log('fire02');
-    })
-    .prom(fun1, fun1)
+        console.log('fire02_1');
+    });
+a.prom(fun1, fun1)
     .then(function(data1, data1_2) {
+        console.group('g3');
         console.log(data1);
         console.log(data1_2);
+        console.groupEnd();
     })
     .fire(function() {
-        console.log('fire03');
+        console.log('fire02_2');
     });
 </script>
 

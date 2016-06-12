@@ -259,6 +259,7 @@
     //后代链全部完成
     SugarPromise.fn.fire = function(fun) {
         this._eve.one(FIRE, fun);
+        return this;
     };
     //main
     var prom = function() {
