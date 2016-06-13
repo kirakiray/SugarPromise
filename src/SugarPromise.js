@@ -169,13 +169,13 @@
     //初始化方法
     SugarPromise.fn._init = function() {
         var _this = this,
-            eve = this._eve,
-            args = this.args;
+            eve = _this._eve,
+            args = _this.args;
         _this.state = PENDING;
         var argLen = args.length;
         var argsData = [];
         each(args, function(e, i) {
-            e(function(succeedData) {
+            e.call(_this, function(succeedData) {
                 //resolve
                 //设置数据
                 argsData[i] = succeedData;
@@ -247,7 +247,7 @@
     };
     //传递数据
     SugarPromise.fn.post = function(data) {
-        this._data = data;
+        this.data = data;
         return this;
     };
     //握手给下一级数据
@@ -265,7 +265,9 @@
     var prom = function() {
         var args = transToArray(arguments);
         var sp = new SugarPromise(args);
-        sp._init();
+        nextTick(function() {
+            sp._init();
+        });
         return sp;
     };
 

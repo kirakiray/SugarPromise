@@ -12,6 +12,7 @@
 </body>
 <script>
 var fun1 = function(resolve, reject) {
+    this.data && console.log('PostData:', this.data);
     setTimeout(function() {
         resolve('hahaha1');
     }, 500);
@@ -33,6 +34,7 @@ prom(fun1, fun2)
         console.log(data1);
         console.log(data2);
     })
+    .post('postpostpostpost1')
     .fire(function() {
         console.log('fire01');
     })
@@ -45,6 +47,7 @@ prom(fun1, fun2)
         console.log('fire02');
     })
     .prom(fun1, fun1)
+    .post('postpostpostpost2')
     .then(function(data1, data1_2) {
         console.log(data1);
         console.log(data1_2);
