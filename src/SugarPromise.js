@@ -246,14 +246,14 @@
         return sp;
     };
     //传递数据
-    SugarPromise.fn.post = function(data) {
+    SugarPromise.fn.send = function(data) {
         this.data = data;
         return this;
     };
     //握手给下一级数据
-    SugarPromise.fn.hand = function(data) {
+    SugarPromise.fn.gift = function(data) {
         each(this._next, function(e) {
-            e.post(data);
+            e.send(data);
         });
     };
     //后代链全部完成
