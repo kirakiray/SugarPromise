@@ -12,7 +12,7 @@
     var WOOD = "wood";
     //后代链全部触发完成
     var FIRE = 'fire';
-
+ 
     //function
     var emptyFun = function() {};
     //转换成数组
@@ -95,33 +95,29 @@
         var firstFun = eveObj.f;
         firstFun && firstFun({
             name: eventName,
-            type: 'first',
-            data: data
-        });
+            type: 'first'
+        }, data);
         delete eveObj.f;
         //触发事件队列
         var oneArr = eveObj.o;
         while (oneArr.length) {
             oneArr.shift()({
                 name: eventName,
-                type: "one",
-                data: data
-            });
+                type: "one"
+            }, data);
         }
         each(eveObj.e, function(e) {
             e({
                 name: eventName,
-                type: "on",
-                data: data
-            });
+                type: "on"
+            }, data);
         });
         //触发last
         var lastFun = eveObj.l;
         lastFun && lastFun({
             name: eventName,
-            type: 'last',
-            data: data
-        });
+            type: 'last'
+        }, data);
         delete eveObj.l;
     };
 
@@ -215,23 +211,23 @@
     //完成时触发
     SugarPromise.fn.then = function(fun) {
         var _this = this;
-        _this._eve.one(FULFILLED, function(e) {
+        _this._eve.one(FULFILLED, function(e, data) {
             //把数据带过去
-            fun.apply(_this, e.data.datas);
+            fun.apply(_this, data.datas);
         });
         return _this;
     };
     //错误抓取
     SugarPromise.fn.catch = function(fun) {
-        this._eve.one(REJECTED, function(e) {
-            fun(e.data);
+        this._eve.one(REJECTED, function(e, data) {
+            fun(data);
         });
         return this;
     };
     //过程中
     SugarPromise.fn.pend = function(fun) {
-        this._eve.on(PENDING, function(e) {
-            fun(e.data);
+        this._eve.on(PENDING, function(e, data) {
+            fun(data);
         });
         return this;
     };
