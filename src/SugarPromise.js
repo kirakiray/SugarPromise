@@ -12,7 +12,7 @@
     var WOOD = "wood";
     //后代链全部触发完成
     var FIRE = 'fire';
- 
+
     //function
     var emptyFun = function() {};
     //转换成数组
@@ -170,6 +170,14 @@
         _this.state = PENDING;
         var argLen = args.length;
         var argsData = [];
+        if (!argLen) {
+            _this.state = FULFILLED;
+            eve.emit(FULFILLED, {
+                datas: argsData,
+                state: FULFILLED
+            });
+            return;
+        }
         each(args, function(e, i) {
             e.call(_this, function(succeedData) {
                 //resolve

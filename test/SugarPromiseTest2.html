@@ -118,6 +118,15 @@ b.prom(fun3, fun1)
     .fire(function() {
         g2.order('fire2_2_2');
     });
+
+//执行空promise
+var c = prom()
+    .then(function() {
+        console.log(arguments);
+    })
+    .fire(function() {
+        console.log(arguments);
+    });
 </script>
 
 </html>
