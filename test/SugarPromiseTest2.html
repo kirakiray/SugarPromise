@@ -21,15 +21,15 @@ var g1 = srtest.group('次数统计');
 g1.setOrder([{
     name: "runfun1",
     descript: "fun1运行次数 5次",
-    count: 5
+    count: 6
 }, {
     name: "runfun2",
     descript: "fun2运行次数 2次",
-    count: 2
+    count: 3
 }, {
     name: "runfun3",
     descript: "fun3运行次数 3次",
-    count: 3
+    count: 4
 }]);
 
 var g2 = srtest.group('then和fire顺序测试');
@@ -117,6 +117,29 @@ b.prom(fun3, fun1)
     })
     .fire(function() {
         g2.order('fire2_2_2');
+    });
+
+var g3 = srtest.group('空promise测试');
+
+//执行空promise
+var c = prom()
+    .then(function() {
+        console.log(arguments);
+    })
+    .fire(function() {
+        console.log(arguments);
+    });
+c.prom(fun1)
+    .then(function(data1) {
+        console.log(data1);
+    })
+    .prom(fun3)
+    .then(function(data3) {
+        console.log(data3);
+    });
+c.prom(fun2)
+    .then(function(data2) {
+        console.log(data2);
     });
 </script>
 

@@ -88,6 +88,9 @@ prom(fun1, fun2)
         g2.order('then1');
     })
     .send('sendsendsendsend1')
+    .pend(function() {
+        console.log(arguments);
+    })
     .fire(function() {
         g2.order('fire1');
     })
