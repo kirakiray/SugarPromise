@@ -123,7 +123,7 @@
 
     function SugarPromise(args) {
         var _this = this;
-        var eve = _this._eve = new SimpleEvent();
+        var eve = _this._e = new SimpleEvent();
         _this.state = WAIT;
         _this.args = args;
         //下一组记录数据
@@ -132,9 +132,10 @@
         eve.last(FULFILLED, function() {
             var fireFun = function() {
                 eve.emit(FIRE);
+                delete _this.data;
                 //判断是否有父级，有则执行引燃WOOD
                 if (_this._par) {
-                    _this._par._eve.emit(WOOD);
+                    _this._par._e.emit(WOOD);
                 }
                 fireFun = null;
             };
@@ -165,7 +166,7 @@
     //初始化方法
     SugarPromise.fn._init = function() {
         var _this = this,
-            eve = _this._eve,
+            eve = _this._e,
             args = _this.args;
         _this.state = PENDING;
         var argLen = args.length;
@@ -219,7 +220,7 @@
     //完成时触发
     SugarPromise.fn.then = function(fun) {
         var _this = this;
-        _this._eve.one(FULFILLED, function(e, data) {
+        _this._e.one(FULFILLED, function(e, data) {
             //把数据带过去
             fun.apply(_this, data.datas);
         });
@@ -227,14 +228,14 @@
     };
     //错误抓取
     SugarPromise.fn.catch = function(fun) {
-        this._eve.one(REJECTED, function(e, data) {
+        this._e.one(REJECTED, function(e, data) {
             fun(data);
         });
         return this;
     };
     //过程中
     SugarPromise.fn.pend = function(fun) {
-        this._eve.on(PENDING, function(e, data) {
+        this._e.on(PENDING, function(e, data) {
             fun(data);
         });
         return this;
@@ -262,7 +263,7 @@
     };
     //后代链全部完成
     SugarPromise.fn.fire = function(fun) {
-        this._eve.one(FIRE, fun);
+        this._e.one(FIRE, fun);
         return this;
     };
     //main
