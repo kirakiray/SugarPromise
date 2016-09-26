@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>errorPromiseTest</title>
+    <link rel="stylesheet" href="srtest.css">
+    <script src="../src/SugarPromise.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="srtest.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+prom(function(res, rej) {
+        res('haha');
+    }, function(res, rej) {
+        rej('hoho');
+    }, function(res, rej) {
+        rej('kaka');
+    })
+    .then(function() {
+        console.log("then => ", arguments);
+    })
+    .catch(function(e) {
+        console.log("error => ", e);
+    })
+    .pend(function(e) {
+        console.log("pending => ", e);
+    });
+</script>
+
+</html>

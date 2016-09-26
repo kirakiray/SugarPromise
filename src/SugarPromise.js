@@ -170,7 +170,10 @@
             args = _this.args;
         _this.state = PENDING;
         var argLen = args.length;
+        //数据正确的反馈数组
         var argsData = [];
+        //数据错误的反馈数组
+        var errData;
         if (!argLen) {
             _this.state = FULFILLED;
             eve.emit(FULFILLED, {
@@ -179,41 +182,53 @@
             });
             return;
         }
-        each(args, function(e, i) {
-            e.call(_this, function(succeedData) {
-                //resolve
-                //设置数据
-                argsData[i] = succeedData;
-                eve.emit(PENDING, {
-                    //数据
-                    data: succeedData,
-                    //状态
-                    state: PENDING,
-                    //序号
-                    no: i
-                });
-                argLen--;
-                if (!argLen) {
+
+        //pending的方法
+        var callPending = function(data, state, index) {
+            eve.emit(PENDING, {
+                //数据
+                data: data,
+                //状态
+                state: state,
+                //序号
+                no: index
+            });
+            argLen--;
+            if (!argLen) {
+                //如果是错误状态的话
+                if (errData) {
+                    eve.emit(REJECTED, errData);
+                } else {
                     //全部数据加载成功
                     _this.state = FULFILLED;
                     eve.emit(FULFILLED, {
                         datas: argsData,
                         state: FULFILLED
                     });
-                    //清除无用事件
-                    eve.off(PENDING);
                 }
+                //垃圾回收
+                callPending = errData = argsData = null;
+                eve.off(PENDING);
+                eve.off(REJECTED);
+                eve.off(FULFILLED);
+            }
+        };
+
+        each(args, function(e, i) {
+            e.call(_this, function(succeedData) {
+                //resolve
+                //设置数据
+                argsData[i] = succeedData;
+                callPending(succeedData, FULFILLED, i);
             }, function(errorData) {
                 //reject
                 _this.state = REJECTED;
-                eve.emit(REJECTED, {
-                    data: errorData,
-                    state: REJECTED,
-                    no: i
+                errData = errData || [];
+                errData.push({
+                    no: i,
+                    data: errorData
                 });
-                //清除无用事件
-                eve.off(PENDING);
-                eve.off(FULFILLED);
+                callPending(errorData, REJECTED, i);
             });
         });
     };
