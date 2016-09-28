@@ -14,6 +14,21 @@
 <body>
 </body>
 <script>
+srtest.init({
+    title: "错误响应测试"
+});
+
+var g1 = srtest.group('错误响应');
+
+var log1 = g1.warn('等待执行');
+
+var g2 = srtest.group('执行顺序');
+g2.setOrder([{
+    name: "test1",
+    descript: "一共执行三次",
+    count: 3
+}]);
+
 prom(function(res, rej) {
         res('haha');
     }, function(res, rej) {
@@ -23,11 +38,14 @@ prom(function(res, rej) {
     })
     .then(function() {
         console.log("then => ", arguments);
+        g1.error("run then");
     })
     .catch(function(e) {
         console.log("error => ", e);
+        log1.succeed('执行正确');
     })
     .pend(function(e) {
+        g2.order('test1');
         console.log("pending => ", e);
     });
 </script>

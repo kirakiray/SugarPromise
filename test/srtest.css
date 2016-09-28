@@ -256,6 +256,7 @@ body {
     cursor: pointer;
     text-decoration: underline;
     color: bisque;
+    word-break: break-word;
 }
 
 ._gline_incontent_key {
