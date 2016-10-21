@@ -147,7 +147,9 @@
             } else {
                 //有后代则后代执行初始化
                 each(_next, function(e) {
-                    e._init();
+                    nextTick(function() {
+                        e._init();
+                    });
                 });
 
                 //给有后代的收集

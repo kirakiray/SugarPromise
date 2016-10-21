@@ -119,28 +119,57 @@ b.prom(fun3, fun1)
         g2.order('fire2_2_2');
     });
 
-var g3 = srtest.group('空promise测试');
+var g4 = srtest.group('空promise测试');
+g4.setOrder({
+    name: "c1_then"
+}, [{
+    name: "c2_then"
+}, {
+    name: "c4_then"
+}], {
+    name: "c3_then"
+}, {
+    name: "c1_fire"
+});
 
-//执行空promise
 var c = prom()
     .then(function() {
+        g4.order('c1_then');
         console.log(arguments);
     })
     .fire(function() {
+        g4.order('c1_fire');
         console.log(arguments);
     });
 c.prom(fun1)
     .then(function(data1) {
+        g4.order('c2_then');
         console.log(data1);
     })
     .prom(fun3)
     .then(function(data3) {
+        g4.order('c3_then');
         console.log(data3);
     });
 c.prom(fun2)
     .then(function(data2) {
+        g4.order('c4_then');
         console.log(data2);
     });
+
+// var c = prom()
+//     .then(function() {
+//         console.log(arguments);
+//     })
+//     .fire(function() {
+//         console.log(arguments);
+//     });
+// c.prom(function(res) {
+//         res();
+//     })
+//     .then(function(data1) {
+//         console.log(data1);
+//     });
 </script>
 
 </html>
