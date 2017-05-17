@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>PrimiseBaseTest</title>
     <link rel="stylesheet" href="srtest.css">
-    <script src="../src/SugarPromise.js"></script>
+    <script src="../src/SugarPromise2.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <script src="srtest.js"></script>
 </head>
@@ -14,91 +14,91 @@
 <body>
 </body>
 <script>
-srtest.init({
-    title: "事件驱动测试"
-});
+    srtest.init({
+        title: "事件驱动测试"
+    });
 
-var shunxu_g = srtest.group("顺序测试");
+    var shunxu_g = srtest.group("顺序测试");
 
-shunxu_g.setOrder({
-    name: "haha_first",
-    descript: "第一个被执行"
-}, {
-    name: "haha_one",
-    descript: "one绑定 总计两次",
-    count: 2
-}, {
-    name: "haha_last",
-    descript: "最后被执行"
-});
+    shunxu_g.setOrder({
+        name: "haha_first",
+        descript: "第一个被执行"
+    }, {
+        name: "haha_one",
+        descript: "one绑定 总计两次",
+        count: 2
+    }, {
+        name: "haha_last",
+        descript: "最后被执行"
+    });
 
-var count_g = srtest.group("数量测试");
+    var count_g = srtest.group("数量测试");
 
-count_g.setOrder({
-    name: "haha",
-    descript: "一共会运行6次，最后通过on触发一次",
-    count: 6
-});
+    count_g.setOrder({
+        name: "haha",
+        descript: "一共会运行6次，最后通过on触发一次",
+        count: 6
+    });
 
-var data_g = srtest.group('数据测试');
+    var data_g = srtest.group('数据测试');
 
 
-var e1 = new SimpleEvent();
-//要传送的数据
-var postdataobj = {
-    val: "IamPostData"
-};
+    var e1 = new SimpleEvent();
+    //要传送的数据
+    var postdataobj = {
+        val: "IamPostData"
+    };
 
-var l1 = data_g.warn('one数据相等吗1');
-e1.one('haha', function(e, data) {
-    count_g.order('haha');
-    shunxu_g.order('haha_one');
-    if (data == postdataobj) {
-        l1.succeed('one数据相等1');
-    }
-});
+    var l1 = data_g.warn('one数据相等吗1');
+    e1.one('haha', function(e, data) {
+        count_g.order('haha');
+        shunxu_g.order('haha_one');
+        if (data == postdataobj) {
+            l1.succeed('one数据相等1');
+        }
+    });
 
-var l2 = data_g.warn('last数据测试');
-e1.last('haha', function(e, data) {
-    count_g.order('haha');
-    shunxu_g.order('haha_last');
-    if (data == postdataobj) {
-        l2.succeed('last数据相等');
-    }
-});
+    var l2 = data_g.warn('last数据测试');
+    e1.last('haha', function(e, data) {
+        count_g.order('haha');
+        shunxu_g.order('haha_last');
+        if (data == postdataobj) {
+            l2.succeed('last数据相等');
+        }
+    });
 
-var l3 = data_g.warn('last数据测试');
-e1.on('haha', function(e, data) {
-    count_g.order('haha');
-    if (data == postdataobj) {
-        l3.succeed('on数据相等');
-    }
-});
+    var l3 = data_g.warn('last数据测试');
+    e1.on('haha', function(e, data) {
+        count_g.order('haha');
+        if (data == postdataobj) {
+            l3.succeed('on数据相等');
+        }
+    });
 
-var l4 = data_g.warn('one数据测试2');
-e1.one('haha', function(e, data) {
-    count_g.order('haha');
-    shunxu_g.order('haha_one');
-    if (data == postdataobj) {
-        l4.succeed('one数据相等2');
-    }
-});
+    var l4 = data_g.warn('one数据测试2');
+    e1.one('haha', function(e, data) {
+        count_g.order('haha');
+        shunxu_g.order('haha_one');
+        if (data == postdataobj) {
+            l4.succeed('one数据相等2');
+        }
+    });
 
-var l5 = data_g.warn('first数据测试');
-e1.first('haha', function(e, data) {
-    count_g.order('haha');
-    shunxu_g.order('haha_first');
-    if (data == postdataobj) {
-        l5.succeed('first数据相等');
-    }
-});
+    var l5 = data_g.warn('first数据测试');
+    e1.first('haha', function(e, data) {
+        count_g.order('haha');
+        shunxu_g.order('haha_first');
+        if (data == postdataobj) {
+            l5.succeed('first数据相等');
+        }
+    });
 
-e1.emit('haha', postdataobj);
-
-setTimeout(function() {
-    //这时候one first last都被消掉了，只会触发on
     e1.emit('haha', postdataobj);
-}, 500);
+
+    setTimeout(function() {
+        //这时候one first last都被消掉了，只会触发on
+        e1.emit('haha', postdataobj);
+    }, 500);
 </script>
 
 </html>

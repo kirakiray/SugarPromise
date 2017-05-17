@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>SugarPromise Test</title>
+    <link rel="stylesheet" href="srtest.css">
+    <script src="../src/SugarPromise2.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="srtest.js"></script>
+</head>
+
+<body>
+</body>
+<script>
+    srtest.init({
+        title: "addTest"
+    });
+
+    var g1 = srtest.group('次数统计');
+
+    g1.setOrder({
+        name: "c4",
+        descript: "4次",
+        count: 4
+    });
+
+    var g2 = srtest.group('个数统计');
+    var l1 = g2.warn('未确认是否三个');
+
+    var a = prom(function(res, rej) {
+            var data = this.data;
+            setTimeout(function() {
+                res('hahahahaha111 ' + data);
+            }, 500);
+        }, function(res, rej) {
+            setTimeout(function() {
+                //临时加进去方案
+                a.add(function(res, rej) {
+                    setTimeout(function() {
+                        //锁上
+                        a.lock();
+
+                        //500毫秒后解锁
+                        setTimeout(function() {
+                            a.unlock();
+                        }, 500);
+
+                        res('haha33333333333');
+                    }, 500);
+                });
+                res('haha22222222');
+            }, 1000);
+        })
+        .then(function() {
+            console.log(arguments);
+            arguments.length == 3 && (l1.succeed('确认是三个'));
+            g1.order('c4');
+        })
+        .send('fuckyou')
+        .fire(function() {
+            console.log('第一个fire成功');
+            g1.order('c4');
+        });
+
+    a.prom(function(res, rej) {
+        setTimeout(function() {
+            res('hahahaha4');
+        }, 500);
+    }).then(function() {
+        console.log(arguments);
+        g1.order('c4');
+    }).fire(function() {
+        console.log('第二个fire成功');
+        g1.order('c4');
+    });
+</script>
+
+</html>

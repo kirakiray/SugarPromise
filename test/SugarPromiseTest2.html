@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>SugarPromise Test 2</title>
     <link rel="stylesheet" href="srtest.css">
-    <script src="../src/SugarPromise.js"></script>
+    <script src="../src/SugarPromise2.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <script src="srtest.js"></script>
 </head>
@@ -14,162 +14,162 @@
 <body>
 </body>
 <script>
-srtest.init({
-    title: "分支后代测试"
-});
-var g1 = srtest.group('次数统计');
-g1.setOrder([{
-    name: "runfun1",
-    descript: "fun1运行次数 5次",
-    count: 6
-}, {
-    name: "runfun2",
-    descript: "fun2运行次数 2次",
-    count: 3
-}, {
-    name: "runfun3",
-    descript: "fun3运行次数 3次",
-    count: 4
-}]);
-
-var g2 = srtest.group('then和fire顺序测试');
-g2.setOrder({
-    name: "then1"
-}, [{
-    name: "then2_1"
-}, {
-    name: "then2_2"
-}], {
-    name: "fire2_1"
-}, [{
-    name: "then2_2_1"
-}, {
-    name: "then2_2_2"
-}], {
-    name: "fire2_2_2"
-}, {
-    name: "fire2_2"
-}, {
-    name: "fire1"
-});
-
-var g3 = srtest.group('数据传送对等测试');
-var l1 = g3.warn('传输数据1');
-var l2 = g3.warn('传输数据2');
-var l3 = g3.warn('返回then测试1');
-var l4 = g3.warn('返回then测试2');
-
-var fun1 = function(resolve, reject) {
-    (this.data == 'sendsendsendsend1') && l1.succeed('传输成功 fun1');
-    (this.data == 'sendsendsendsend1') && g3.log(this.data);
-    setTimeout(function() {
-        g1.order('runfun1');
-        resolve('hahaha1');
-    }, 500);
-};
-var fun2 = function(resolve, reject) {
-    (this.data == 'sendsendsendsend1') && l2.succeed('传输成功 fun2');
-    (this.data == 'sendsendsendsend1') && g3.log(this.data);
-    setTimeout(function() {
-        g1.order('runfun2');
-        resolve('hahaha2');
-    }, 1000);
-};
-
-var fun3 = function(resolve, reject) {
-    setTimeout(function() {
-        g1.order('runfun3');
-        resolve('hahaha3');
-    }, 1500);
-};
-
-var a = prom(fun1, fun3)
-    .then(function(data1, data3) {
-        g2.order('then1');
-        (data1 == "hahaha1") && l3.succeed('fun1返回数据成功');
-    })
-    .fire(function() {
-        g2.order('fire1');
+    srtest.init({
+        title: "分支后代测试"
     });
-a.prom(fun1, fun2)
-    .then(function(data1, data2) {
-        g2.order('then2_1');
-    })
-    .send('sendsendsendsend1')
-    .fire(function() {
-        g2.order('fire2_1');
-    });
-var b = a.prom(fun1, fun1)
-    .then(function(data1, data1_2) {
-        g2.order('then2_2');
-    })
-    .fire(function() {
-        g2.order('fire2_2');
-    });
-b.prom(fun2, fun3)
-    .then(function(data2, data3) {
-        g2.order('then2_2_1');
-    });
-b.prom(fun3, fun1)
-    .then(function(data3, data1) {
-        g2.order('then2_2_2');
-        (data3 == "hahaha3") && l4.succeed('fun3返回数据成功');
-    })
-    .fire(function() {
-        g2.order('fire2_2_2');
+    var g1 = srtest.group('次数统计');
+    g1.setOrder([{
+        name: "runfun1",
+        descript: "fun1运行次数 5次",
+        count: 6
+    }, {
+        name: "runfun2",
+        descript: "fun2运行次数 2次",
+        count: 3
+    }, {
+        name: "runfun3",
+        descript: "fun3运行次数 3次",
+        count: 4
+    }]);
+
+    var g2 = srtest.group('then和fire顺序测试');
+    g2.setOrder({
+        name: "then1"
+    }, [{
+        name: "then2_1"
+    }, {
+        name: "then2_2"
+    }], {
+        name: "fire2_1"
+    }, [{
+        name: "then2_2_1"
+    }, {
+        name: "then2_2_2"
+    }], {
+        name: "fire2_2_2"
+    }, {
+        name: "fire2_2"
+    }, {
+        name: "fire1"
     });
 
-var g4 = srtest.group('空promise测试');
-g4.setOrder({
-    name: "c1_then"
-}, [{
-    name: "c2_then"
-}, {
-    name: "c4_then"
-}], {
-    name: "c3_then"
-}, {
-    name: "c1_fire"
-});
+    var g3 = srtest.group('数据传送对等测试');
+    var l1 = g3.warn('传输数据1');
+    var l2 = g3.warn('传输数据2');
+    var l3 = g3.warn('返回then测试1');
+    var l4 = g3.warn('返回then测试2');
 
-var c = prom()
-    .then(function() {
-        g4.order('c1_then');
-        console.log(arguments);
-    })
-    .fire(function() {
-        g4.order('c1_fire');
-        console.log(arguments);
-    });
-c.prom(fun1)
-    .then(function(data1) {
-        g4.order('c2_then');
-        console.log(data1);
-    })
-    .prom(fun3)
-    .then(function(data3) {
-        g4.order('c3_then');
-        console.log(data3);
-    });
-c.prom(fun2)
-    .then(function(data2) {
-        g4.order('c4_then');
-        console.log(data2);
+    var fun1 = function(resolve, reject) {
+        (this.data == 'sendsendsendsend1') && l1.succeed('传输成功 fun1');
+        (this.data == 'sendsendsendsend1') && g3.log(this.data);
+        setTimeout(function() {
+            g1.order('runfun1');
+            resolve('hahaha1');
+        }, 500);
+    };
+    var fun2 = function(resolve, reject) {
+        (this.data == 'sendsendsendsend1') && l2.succeed('传输成功 fun2');
+        (this.data == 'sendsendsendsend1') && g3.log(this.data);
+        setTimeout(function() {
+            g1.order('runfun2');
+            resolve('hahaha2');
+        }, 1000);
+    };
+
+    var fun3 = function(resolve, reject) {
+        setTimeout(function() {
+            g1.order('runfun3');
+            resolve('hahaha3');
+        }, 1500);
+    };
+
+    var a = prom(fun1, fun3)
+        .then(function(data1, data3) {
+            g2.order('then1');
+            (data1 == "hahaha1") && l3.succeed('fun1返回数据成功');
+        })
+        .fire(function() {
+            g2.order('fire1');
+        });
+    a.prom(fun1, fun2)
+        .then(function(data1, data2) {
+            g2.order('then2_1');
+        })
+        .send('sendsendsendsend1')
+        .fire(function() {
+            g2.order('fire2_1');
+        });
+    var b = a.prom(fun1, fun1)
+        .then(function(data1, data1_2) {
+            g2.order('then2_2');
+        })
+        .fire(function() {
+            g2.order('fire2_2');
+        });
+    b.prom(fun2, fun3)
+        .then(function(data2, data3) {
+            g2.order('then2_2_1');
+        });
+    b.prom(fun3, fun1)
+        .then(function(data3, data1) {
+            g2.order('then2_2_2');
+            (data3 == "hahaha3") && l4.succeed('fun3返回数据成功');
+        })
+        .fire(function() {
+            g2.order('fire2_2_2');
+        });
+
+    var g4 = srtest.group('空promise测试');
+    g4.setOrder({
+        name: "c1_then"
+    }, [{
+        name: "c2_then"
+    }, {
+        name: "c4_then"
+    }], {
+        name: "c3_then"
+    }, {
+        name: "c1_fire"
     });
 
-// var c = prom()
-//     .then(function() {
-//         console.log(arguments);
-//     })
-//     .fire(function() {
-//         console.log(arguments);
-//     });
-// c.prom(function(res) {
-//         res();
-//     })
-//     .then(function(data1) {
-//         console.log(data1);
-//     });
+    var c = prom()
+        .then(function() {
+            g4.order('c1_then');
+            console.log(arguments);
+        })
+        .fire(function() {
+            g4.order('c1_fire');
+            console.log(arguments);
+        });
+    c.prom(fun1)
+        .then(function(data1) {
+            g4.order('c2_then');
+            console.log(data1);
+        })
+        .prom(fun3)
+        .then(function(data3) {
+            g4.order('c3_then');
+            console.log(data3);
+        });
+    c.prom(fun2)
+        .then(function(data2) {
+            g4.order('c4_then');
+            console.log(data2);
+        });
+
+    // var c = prom()
+    //     .then(function() {
+    //         console.log(arguments);
+    //     })
+    //     .fire(function() {
+    //         console.log(arguments);
+    //     });
+    // c.prom(function(res) {
+    //         res();
+    //     })
+    //     .then(function(data1) {
+    //         console.log(data1);
+    //     });
 </script>
 
 </html>

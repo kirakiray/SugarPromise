@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
     <title>SugarPromise Test</title>
     <link rel="stylesheet" href="srtest.css">
-    <script src="../src/SugarPromise.js"></script>
+    <script src="../src/SugarPromise2.js"></script>
     <script src="jquery-1.9.1.min.js"></script>
     <script src="srtest.js"></script>
 </head>
@@ -14,109 +14,109 @@
 <body>
 </body>
 <script>
-srtest.init({
-    title: "链式后代测试"
-});
-
-var g1 = srtest.group('次数统计');
-g1.setOrder({
-    name: "runfun1",
-    descript: "fun1 一共执行4次",
-    count: 4
-});
-
-var g2 = srtest.group('then和fire执行顺序测试');
-g2.setOrder({
-    name: "then1"
-}, {
-    name: "then2"
-}, {
-    name: "then3"
-}, {
-    name: "fire3"
-}, {
-    name: "fire2"
-}, {
-    name: "fire1"
-});
-
-var g3 = srtest.group('传输数据对等测试');
-g3.setOrder({
-    name: "g3_hasdata",
-    count: 3,
-    descript: "一共有3次有数据"
-});
-
-var g4 = srtest.group('then数据对等测试');
-g4.setOrder([{
-    name: "data1",
-    count: 4
-}, {
-    name: "data2"
-}, {
-    name: "data3"
-}]);
-
-var fun1 = function(resolve, reject) {
-    // this.data && console.log('PostData:', this.data);
-    if (this.data) {
-        g3.order('g3_hasdata');
-        g3.log(this.data);
-    }
-    setTimeout(function() {
-        g1.order('runfun1');
-        resolve('hahaha1');
-    }, 500);
-};
-var fun2 = function(resolve, reject) {
-    setTimeout(function() {
-        resolve('hahaha222222');
-    }, 1000);
-};
-
-var fun3 = function(resolve, reject) {
-    setTimeout(function() {
-        resolve('hahaha33333333333');
-    }, 1500);
-};
-
-prom(fun1, fun2)
-    .then(function(data1, data2) {
-        (data1 == 'hahaha1') && g4.order('data1');
-        g4.log(data1);
-        (data2 == 'hahaha222222') && g4.order('data2');
-        g2.order('then1');
-    })
-    .send('sendsendsendsend1')
-    .pend(function() {
-        console.log(arguments);
-    })
-    .fire(function() {
-        g2.order('fire1');
-    })
-    .prom(fun1, fun3)
-    .then(function(data1, data3) {
-        (data1 == 'hahaha1') && g4.order('data1');
-        g4.log(data1);
-        (data3 == 'hahaha33333333333') && g4.order('data3');
-        g4.log(data3);
-        g2.order('then2');
-    })
-    .fire(function() {
-        g2.order('fire2');
-    })
-    .prom(fun1, fun1)
-    .send('sendsendsendsend2')
-    .then(function(data1, data1_2) {
-        (data1 == 'hahaha1') && g4.order('data1');
-        g4.log(data1);
-        (data1_2 == 'hahaha1') && g4.order('data1');
-        g4.log(data1_2);
-        g2.order('then3');
-    })
-    .fire(function() {
-        g2.order('fire3');
+    srtest.init({
+        title: "链式后代测试"
     });
+
+    var g1 = srtest.group('次数统计');
+    g1.setOrder({
+        name: "runfun1",
+        descript: "fun1 一共执行4次",
+        count: 4
+    });
+
+    var g2 = srtest.group('then和fire执行顺序测试');
+    g2.setOrder({
+        name: "then1"
+    }, {
+        name: "then2"
+    }, {
+        name: "then3"
+    }, {
+        name: "fire3"
+    }, {
+        name: "fire2"
+    }, {
+        name: "fire1"
+    });
+
+    var g3 = srtest.group('传输数据对等测试');
+    g3.setOrder({
+        name: "g3_hasdata",
+        count: 3,
+        descript: "一共有3次有数据"
+    });
+
+    var g4 = srtest.group('then数据对等测试');
+    g4.setOrder([{
+        name: "data1",
+        count: 4
+    }, {
+        name: "data2"
+    }, {
+        name: "data3"
+    }]);
+
+    var fun1 = function(resolve, reject) {
+        // this.data && console.log('PostData:', this.data);
+        if (this.data) {
+            g3.order('g3_hasdata');
+            g3.log(this.data);
+        }
+        setTimeout(function() {
+            g1.order('runfun1');
+            resolve('hahaha1');
+        }, 500);
+    };
+    var fun2 = function(resolve, reject) {
+        setTimeout(function() {
+            resolve('hahaha222222');
+        }, 1000);
+    };
+
+    var fun3 = function(resolve, reject) {
+        setTimeout(function() {
+            resolve('hahaha33333333333');
+        }, 1500);
+    };
+
+    prom(fun1, fun2)
+        .then(function(data1, data2) {
+            (data1 == 'hahaha1') && g4.order('data1');
+            g4.log(data1);
+            (data2 == 'hahaha222222') && g4.order('data2');
+            g2.order('then1');
+        })
+        .send('sendsendsendsend1')
+        .pend(function() {
+            console.log(arguments);
+        })
+        .fire(function() {
+            g2.order('fire1');
+        })
+        .prom(fun1, fun3)
+        .then(function(data1, data3) {
+            (data1 == 'hahaha1') && g4.order('data1');
+            g4.log(data1);
+            (data3 == 'hahaha33333333333') && g4.order('data3');
+            g4.log(data3);
+            g2.order('then2');
+        })
+        .fire(function() {
+            g2.order('fire2');
+        })
+        .prom(fun1, fun1)
+        .send('sendsendsendsend2')
+        .then(function(data1, data1_2) {
+            (data1 == 'hahaha1') && g4.order('data1');
+            g4.log(data1);
+            (data1_2 == 'hahaha1') && g4.order('data1');
+            g4.log(data1_2);
+            g2.order('then3');
+        })
+        .fire(function() {
+            g2.order('fire3');
+        });
 </script>
 
 </html>
